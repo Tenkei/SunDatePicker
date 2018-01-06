@@ -72,11 +72,11 @@ public class MainActivity extends FragmentActivity implements
             .Builder()
             .id(id)
             .theme(theme)
-            .future(false)
             //.showYearFirst(true)
             //.closeYearAutomatically(true)
             //.minYear(1393)
-            .future(mFuture.isChecked());
+            .future(mFuture.isChecked())
+            .enableToday(true);
 
         if (v.getId() == R.id.startDate)
             builder.date(mStartDate.getDay(), mStartDate.getMonth(), mStartDate.getYear());

@@ -38,6 +38,17 @@
         android:padding="@dimen/dialog_padding"
         android:text="@string/ok_btn"/>
 
+    <TextView
+        android:id="@+id/today"
+        style="@style/ButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/done"
+        android:padding="@dimen/dialog_padding"
+        android:text="@string/today_btn"
+        android:textColor="#ff0099cc"/>
+
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"

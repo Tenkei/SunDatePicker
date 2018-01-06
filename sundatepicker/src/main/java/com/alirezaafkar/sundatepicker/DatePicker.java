@@ -36,6 +36,7 @@ public class DatePicker extends DialogFragment
     private Builder mBuilder;
     private String[] mMonths;
     private DateItem mDateItem;
+    private boolean enableTodayBtn;
     private String[] mWeekDays;
     private DateSetListener mCallBack;
 
@@ -48,6 +49,7 @@ public class DatePicker extends DialogFragment
 
         private int id;
         private DateItem dateItem;
+        private boolean enableTodayBtn;
 
         public Builder() {
             dateItem = new DateItem();
@@ -108,6 +110,14 @@ public class DatePicker extends DialogFragment
         }
 
         /**
+         * @param enable true means Today button is enabled
+         */
+        public Builder enableToday(boolean enable) {
+            this.enableTodayBtn = enable;
+            return this;
+        }
+
+        /**
          * @param shouldShowYearFirst true means show year fragment first
          */
         public Builder showYearFirst(boolean shouldShowYearFirst) {
@@ -133,6 +143,7 @@ public class DatePicker extends DialogFragment
             datePicker.mCallBack = callback;
             datePicker.mDateItem = dateItem;
             datePicker.mBuilder = this;
+            datePicker.enableTodayBtn = this.enableTodayBtn;
             return datePicker;
         }
     }
@@ -176,6 +187,8 @@ public class DatePicker extends DialogFragment
         view.findViewById(R.id.year).setOnClickListener(this);
         view.findViewById(R.id.date).setOnClickListener(this);
         view.findViewById(R.id.cancel).setOnClickListener(this);
+        view.findViewById(R.id.today).setOnClickListener(this);
+        view.findViewById(R.id.today).setVisibility(enableTodayBtn ? View.VISIBLE : View.INVISIBLE);
 
         return view;
     }
@@ -214,6 +227,12 @@ public class DatePicker extends DialogFragment
             dismiss();
         } else if (v.getId() == R.id.cancel) {
             dismiss();
+        } else if(v.getId() == R.id.today) {
+            //Jump to Today
+            JDF today = new JDF();
+            setDate(today.getIranianDay(), today.getIranianMonth(), today.getIranianYear());
+            switchFragment(MonthFragment.newInstance(DatePicker.this,
+                    mDateItem.getMaxMonth()));
         }
     }
 
