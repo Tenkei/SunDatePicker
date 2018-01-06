@@ -45,7 +45,7 @@ public class MainActivity extends FragmentActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLocale("fa");
+        setLocale("en");
 
         setContentView(R.layout.activity_main);
 
@@ -72,6 +72,7 @@ public class MainActivity extends FragmentActivity implements
             .Builder()
             .id(id)
             .theme(theme)
+            .forceLayoutDirection(View.LAYOUT_DIRECTION_RTL)
             //.showYearFirst(true)
             //.closeYearAutomatically(true)
             //.minYear(1393)

@@ -1,7 +1,10 @@
 package com.alirezaafkar.sundatepicker;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -10,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -20,6 +24,8 @@ import com.alirezaafkar.sundatepicker.fragments.YearFragment;
 import com.alirezaafkar.sundatepicker.interfaces.DateInterface;
 import com.alirezaafkar.sundatepicker.interfaces.DateSetListener;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -30,26 +36,40 @@ import java.util.Locale;
 @SuppressWarnings("NewInstance")
 public class DatePicker extends DialogFragment
     implements OnClickListener, DateInterface {
+
     private TextView mDate;
     private TextView mYear;
 
     private Builder mBuilder;
     private String[] mMonths;
     private DateItem mDateItem;
-    private boolean enableTodayBtn;
     private String[] mWeekDays;
+    private boolean enableTodayBtn;
+    private boolean forceDirection;
+    private int layoutDirection;
     private DateSetListener mCallBack;
 
     public DatePicker() {
     }
 
     public static class Builder {
+
+        @TargetApi(17)
+        @Retention(RetentionPolicy.SOURCE)
+        @IntDef({View.LAYOUT_DIRECTION_LTR,
+                View.LAYOUT_DIRECTION_RTL,
+                View.LAYOUT_DIRECTION_INHERIT,
+                View.LAYOUT_DIRECTION_LOCALE})
+        public @interface LayoutDirection{}
+
         @StyleRes
         private int theme;
 
         private int id;
         private DateItem dateItem;
         private boolean enableTodayBtn;
+        private boolean forceDirection;
+        private int layoutDirection;
 
         public Builder() {
             dateItem = new DateItem();
@@ -138,12 +158,21 @@ public class DatePicker extends DialogFragment
             return this;
         }
 
+        @TargetApi(17)
+        public Builder forceLayoutDirection(@LayoutDirection int layoutDirection){
+            forceDirection = true;
+            this.layoutDirection = layoutDirection;
+            return this;
+        }
+
         public DatePicker build(DateSetListener callback) {
             DatePicker datePicker = new DatePicker();
             datePicker.mCallBack = callback;
             datePicker.mDateItem = dateItem;
             datePicker.mBuilder = this;
             datePicker.enableTodayBtn = this.enableTodayBtn;
+            datePicker.forceDirection = this.forceDirection;
+            datePicker.layoutDirection = this.layoutDirection;
             return datePicker;
         }
     }
@@ -177,6 +206,13 @@ public class DatePicker extends DialogFragment
     @Override
     public View onCreateView(LayoutInflater layoutInflater,
         ViewGroup container, Bundle savedInstanceState) {
+
+        //If Needed Force Layout Direction
+        if (forceDirection && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+            Window window = getDialog().getWindow();
+            if(window != null)
+                window.getDecorView().setLayoutDirection(layoutDirection);
+        }
 
         View view = layoutInflater.inflate(R.layout.dialog_main, container, false);
 
